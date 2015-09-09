@@ -5,14 +5,6 @@
  */
 package com.gson.oauth;
 
-import com.alibaba.fastjson.JSONObject;
-import com.gson.bean.Article;
-import com.gson.bean.Articles;
-import com.gson.bean.TemplateData;
-import com.gson.inf.SendAllMsgTypes;
-import com.gson.util.HttpKit;
-import org.apache.commons.lang.StringUtils;
-
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.gson.bean.Article;
+import com.gson.bean.Articles;
+import com.gson.bean.TemplateData;
+import com.gson.inf.SendAllMsgTypes;
+import com.gson.util.HttpKit;
 
 /**
  * 客服消息接口
@@ -176,9 +177,35 @@ public class Message {
         Map<String, Object> json = new HashMap<String, Object>();
         json.put("touser", openId);
         json.put("msgtype", "news");
-        json.put("voice", articles);
-        String result = sendMsg(accessToken, json);
-        return result;
+
+        Map<String, Object> news = new HashMap<String, Object>();
+        news.put("articles", articles);
+
+        json.put("news", news);
+        return sendMsg(accessToken, json);
+    }
+
+    /**
+     * 发送卡券
+     * 
+     * @param accessToken
+     * @param openId
+     * @param card_id
+     * @param card_ext 详情及签名规则: http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html#.E9.99.84.E5.BD.954-.E5.8D.A1.E5.88.B8.E6.89.A9.E5.B1.95.E5.AD.97.E6.AE.B5.E5.8F.8A.E7.AD.BE.E5.90.8D.E7.94.9F.E6.88.90.E7.AE.97.E6.B3.95
+     * @return
+     * @throws Exception
+     */
+    public String sendCoupon(String accessToken, String openId, String card_id, String card_ext) throws Exception {
+        Map<String, Object> json = new HashMap<String, Object>();
+        json.put("touser", openId);
+        json.put("msgtype", "wxcard");
+
+        Map<String, Object> wxcard = new HashMap<String, Object>();
+        wxcard.put("card_id", card_id);
+        wxcard.put("card_ext", card_ext);
+
+        json.put("wxcard", wxcard);
+        return sendMsg(accessToken, json);
     }
 
     /**
